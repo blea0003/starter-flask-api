@@ -64,12 +64,6 @@ scikit-image==0.21.0
 scipy==1.11.2
 shapely==2.0.1
 six==1.16.0
-tensorboard==2.13.0
-tensorboard-data-server==0.7.1
-tensorflow==2.13.0
-tensorflow-estimator==2.13.0
-tensorflow-intel==2.13.0
-tensorflow-io-gcs-filesystem==0.31.0
 termcolor==2.3.0
 tifffile==2023.9.18
 tqdm==4.66.1
