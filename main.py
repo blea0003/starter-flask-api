@@ -50,7 +50,7 @@ def text_box_htr(doc_img, model="keras_ocr", debug=False):
 
                 recognized_texts.append(pred)
         except:
-            print("Hosting service tier limit exceeded. Try again in a minute")
+            raise Exception("Hosting service tier limit exceeded. Try again in a minute")
     
     return recognized_texts 
 
