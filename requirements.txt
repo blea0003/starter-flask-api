@@ -68,9 +68,7 @@ termcolor==2.3.0
 tifffile==2023.9.18
 tqdm==4.66.1
 typing_extensions==4.5.0
-unzip==1.0.0
 urllib3==1.26.16
 validators==0.22.0
 Werkzeug==2.3.7
-wget==3.2
 wrapt==1.15.0
