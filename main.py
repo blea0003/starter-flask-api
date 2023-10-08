@@ -1,6 +1,5 @@
 from extraction import get_boxes, display
 import cv2
-cv2.ocl.setUseOpenCL(False)
 import keras_ocr
 
 def text_box_htr(doc_img, model="keras_ocr", debug=False):
