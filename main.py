@@ -25,29 +25,32 @@ def text_box_htr(doc_img, model="keras_ocr", debug=False):
 
     if model == "keras_ocr":
     
-        for img in text_boxes:
-            _, image_data = cv2.imencode(".jpg", img)
-            image_bytes = image_data.tobytes()
+        try:
+            for img in text_boxes:
+                _, image_data = cv2.imencode(".jpg", img)
+                image_bytes = image_data.tobytes()
 
-            image_stream = io.BytesIO(image_bytes)
+                image_stream = io.BytesIO(image_bytes)
 
-            language = "en"
-            result = client.recognize_printed_text_in_stream(image_stream, language=language)
+                language = "en"
+                result = client.recognize_printed_text_in_stream(image_stream, language=language)
 
-            if result:
-                recognized_words = []
-                for region in result.regions:
-                    for line in region.lines:
-                        recognized_words.extend(line.words)
+                if result:
+                    recognized_words = []
+                    for region in result.regions:
+                        for line in region.lines:
+                            recognized_words.extend(line.words)
 
-                pred = ""
-                for word in recognized_words:
-                    pred += str(word.text)
+                    pred = ""
+                    for word in recognized_words:
+                        pred += str(word.text)
 
-            else:
-                pred = ""
+                else:
+                    pred = ""
 
-            recognized_texts.append(pred)
+                recognized_texts.append(pred)
+        except:
+            print("Hosting service tier limit exceeded. Try again in a minute")
     
     return recognized_texts 
 
