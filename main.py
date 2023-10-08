@@ -1,6 +1,19 @@
 from extraction import get_boxes, display
 import cv2
-import keras_ocr
+from azure.cognitiveservices.vision.computervision import ComputerVisionClient
+from msrest.authentication import CognitiveServicesCredentials
+import io
+
+endpoint = "https://mds12htr.cognitiveservices.azure.com/"
+region = "southeastasia"
+key = "59084e0384ae403fa0fbc957fc9f9f20"
+
+credentials = CognitiveServicesCredentials(key)
+client = ComputerVisionClient(
+    endpoint="https://" + region + ".api.cognitive.microsoft.com/",
+    credentials=credentials
+)
+
 
 def text_box_htr(doc_img, model="keras_ocr", debug=False):
     """
@@ -11,42 +24,30 @@ def text_box_htr(doc_img, model="keras_ocr", debug=False):
     recognized_texts = []
 
     if model == "keras_ocr":
-        pipeline = keras_ocr.pipeline.Pipeline()
     
         for img in text_boxes:
-            pred = pipeline.recognize([img])
+            _, image_data = cv2.imencode(".jpg", img)
+            image_bytes = image_data.tobytes()
 
-            if pred[0] == []:
+            image_stream = io.BytesIO(image_bytes)
+
+            language = "en"
+            result = client.recognize_printed_text_in_stream(image_stream, language=language)
+
+            if result:
+                recognized_words = []
+                for region in result.regions:
+                    for line in region.lines:
+                        recognized_words.extend(line.words)
+
                 pred = ""
+                for word in recognized_words:
+                    pred += str(word.text)
 
             else:
-                pred = pred[0][0][0]
+                pred = ""
+
             recognized_texts.append(pred)
-
-    # if model == "self_implementation":
-    #     # Load model
-    #     model = tf.keras.models.load_model('model\models\htr_model')
-    #     prediction_model = tf.keras.models.Model(model.get_layer(name="image").input, model.get_layer(name="dense2").output)
-
-    #     for img in text_boxes:
-    #         # Preprocess image
-    #         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) # Greyscale
-    #         img = 255 - img                             # Invert
-    #         img = cv2.flip(img, 1)                      # Flip
-    #         img = cv2.transpose(img)                    # Transpose
-    #         img = img / 255                             # Normalize
-    #         img = cv2.resize(img, (30, 200))            # Scale down
-    #         img = tf.expand_dims(img, axis=0)
-    #         img = tf.expand_dims(img, axis=3)
-
-    #         # Predict text in image
-    #         pred = prediction_model.predict(img)
-
-    #         # Decode prediction (halted progress)
-
-    #         # Append prediction
-    #         # recognized_texts.append(pred)
-
     
     return recognized_texts 
 
