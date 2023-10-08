@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-
+cv2.ocl.setUseOpenCL(False)
 
 def get_boxes(img, box_width=400, box_height=60, debug=False):
     """
