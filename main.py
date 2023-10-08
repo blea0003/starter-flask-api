@@ -1,6 +1,5 @@
 from extraction import get_boxes, display
 import cv2
-import tensorflow as tf
 import keras_ocr
 
 def text_box_htr(doc_img, model="keras_ocr", debug=False):
@@ -24,29 +23,29 @@ def text_box_htr(doc_img, model="keras_ocr", debug=False):
                 pred = pred[0][0][0]
             recognized_texts.append(pred)
 
-    if model == "self_implementation":
-        # Load model
-        model = tf.keras.models.load_model('model\models\htr_model')
-        prediction_model = tf.keras.models.Model(model.get_layer(name="image").input, model.get_layer(name="dense2").output)
+    # if model == "self_implementation":
+    #     # Load model
+    #     model = tf.keras.models.load_model('model\models\htr_model')
+    #     prediction_model = tf.keras.models.Model(model.get_layer(name="image").input, model.get_layer(name="dense2").output)
 
-        for img in text_boxes:
-            # Preprocess image
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) # Greyscale
-            img = 255 - img                             # Invert
-            img = cv2.flip(img, 1)                      # Flip
-            img = cv2.transpose(img)                    # Transpose
-            img = img / 255                             # Normalize
-            img = cv2.resize(img, (30, 200))            # Scale down
-            img = tf.expand_dims(img, axis=0)
-            img = tf.expand_dims(img, axis=3)
+    #     for img in text_boxes:
+    #         # Preprocess image
+    #         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) # Greyscale
+    #         img = 255 - img                             # Invert
+    #         img = cv2.flip(img, 1)                      # Flip
+    #         img = cv2.transpose(img)                    # Transpose
+    #         img = img / 255                             # Normalize
+    #         img = cv2.resize(img, (30, 200))            # Scale down
+    #         img = tf.expand_dims(img, axis=0)
+    #         img = tf.expand_dims(img, axis=3)
 
-            # Predict text in image
-            pred = prediction_model.predict(img)
+    #         # Predict text in image
+    #         pred = prediction_model.predict(img)
 
-            # Decode prediction (halted progress)
+    #         # Decode prediction (halted progress)
 
-            # Append prediction
-            # recognized_texts.append(pred)
+    #         # Append prediction
+    #         # recognized_texts.append(pred)
 
     
     return recognized_texts 
